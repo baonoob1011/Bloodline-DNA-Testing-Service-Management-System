@@ -38,6 +38,7 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {confirmPassword, ...dataToSend} = info;
     try {
       const response = await fetch("http://localhost:8080/api/auth/register", {
