@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import swp.project.adn_backend.enums.AppointmentStatus;
+import swp.project.adn_backend.enums.SampleStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,54 +14,58 @@ import java.util.List;
 @Entity
 @Data
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
+@Table(name = "Sample")
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "Users")
-public class Users {
+public class Sample {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    long userId;
-    @Column(name = "full_name")
-    String fullName;
-    String phone;
-    String email;
-    String enabled;
-    String role;
-    @Column(name = "create_at")
-    LocalDateTime createAt;
+    @Column(name = "sample_id")
+    long sampleId;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
+    @Column(name = "sample_type")
+    String sampleType;
+
+    @Column(name = "collection_date")
+    LocalDateTime collectionDate;
+
+    @Column(name = "sample_status")
+    SampleStatus sampleStatus;
+
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    List<Patient>patients;
+    @JoinColumn(name = "appointment_id", nullable = false)
+    Appointment appointment;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    List<Appointment> appointments;
+    @JoinColumn(name = "patient_id", nullable = false)
+    Patient patient;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
+    // Nhân viên lấy mẫu
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    List<Service> services;
+    @JoinColumn(name = "user_id", nullable = false)
+    Users users;
 
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
+    @ManyToOne(cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    List<Feedback> feedbacks;
+    @JoinColumn(name = "kit_id", nullable = false)
+    Kit kit;
 
-    //nhân viên lấy mẫu
-    @OneToMany(mappedBy = "users", fetch = FetchType.LAZY, cascade = {
+    @OneToMany(mappedBy = "sample", fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH
     })
-    List<Sample> samples;
-
+    List<Result> results;
 
 
 }
